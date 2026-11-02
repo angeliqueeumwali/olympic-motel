@@ -996,3 +996,17 @@ img {
     border-bottom: 1px solid #eeeae4;
   }
 }
+
+/* Prioritize and display hero slideshow images */
+.hero-slide {
+  overflow: hidden;
+  background-image: none !important;
+}
+
+.hero-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}

@@ -157,11 +157,20 @@ function App() {
         {/* HERO */}
         <section className="hero" id="home">
   <div className="hero-slides">
-    <div
-      key={heroImages[activeSlide]}
-      className="hero-slide active"
-      style={{ backgroundImage: `url(${heroImages[activeSlide]})` }}
-    />
+    {heroImages.map((image, index) => (
+      <div
+        key={image}
+        className={`hero-slide ${activeSlide === index ? "active" : ""}`}
+      >
+        <img
+          src={image}
+          alt={index === 0 ? "Olympic Motel in Musanze" : ""}
+          fetchPriority={index === 0 ? "high" : "auto"}
+          loading={index === 0 ? "eager" : "lazy"}
+          decoding="async"
+        />
+      </div>
+    ))}
   </div>
 
   <div className="hero-overlay"></div>

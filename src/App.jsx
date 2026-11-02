@@ -96,7 +96,7 @@ function App() {
     }, 5000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [heroImages.length]);
 
   const [booking, setBooking] = useState({
     checkIn: "",
@@ -157,13 +157,11 @@ function App() {
         {/* HERO */}
         <section className="hero" id="home">
   <div className="hero-slides">
-    {heroImages.map((image, index) => (
-      <div
-        key={image}
-        className={`hero-slide ${activeSlide === index ? "active" : ""}`}
-        style={{ backgroundImage: `url(${image})` }}
-      />
-    ))}
+    <div
+      key={heroImages[activeSlide]}
+      className="hero-slide active"
+      style={{ backgroundImage: `url(${heroImages[activeSlide]})` }}
+    />
   </div>
 
   <div className="hero-overlay"></div>
@@ -223,7 +221,7 @@ function App() {
         {/* ABOUT */}
         <section className="about section-padding" id="about">
           <div className="about-image image-frame">
-            <img src="/images/about.jpg" alt="Olympic Motel" />
+            <img src="/images/about.jpg" alt="Olympic Motel" loading="lazy" decoding="async" />
             <span className="image-caption">A WELCOME IN MUSANZE</span>
           </div>
 
@@ -257,7 +255,7 @@ function App() {
             {rooms.map((room) => (
               <article className="room-card" key={room.number}>
                 <div className="room-image">
-                  <img src={room.image} alt={room.name} />
+                  <img src={room.image} alt={room.name} loading="lazy" decoding="async" />
                   <span className="room-number">{room.number}</span>
                 </div>
                 <div className="room-info">
@@ -300,7 +298,7 @@ function App() {
           <div className="gallery-grid">
             {galleryImages.map((image, index) => (
               <div className={`gallery-item gallery-item-${index + 1}`} key={image}>
-                <img src={image} alt={`Olympic Motel gallery ${index + 1}`} />
+                <img src={image} alt={`Olympic Motel gallery ${index + 1}`} loading="lazy" decoding="async" />
               </div>
             ))}
           </div>

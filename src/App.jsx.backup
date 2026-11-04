@@ -1,0 +1,676 @@
+import { useState, useEffect } from "react";
+import {
+  Menu,
+  X,
+  ArrowUpRight,
+  MapPin,
+  BedDouble,
+  Phone,
+  MessageCircle,
+  Building2,
+  Images,
+  Sparkles,
+} from "lucide-react";
+import "./App.css";
+
+/*
+  IMAGE GUIDE:
+  Change the filenames below when you add your real photographs.
+  All paths start inside public/.
+*/
+
+const heroImages = [
+  "/images/hero.jpg",
+  "/images/hero-2.jpg",
+  "/images/hero-3.jpg",
+];
+
+const properties = [
+  {
+    id: "olympic",
+    name: "Olympic Motel",
+    folder: "olympic",
+    tagline: "Our flagship property",
+    description:
+      "Discover Olympic Motel, part of a collection of accommodation properties in Musanze, Rwanda.",
+    building: [
+      "/images/hero.jpg",
+      "/images/about.jpg",
+    ],
+    rooms: [
+      "/images/room-1.jpg",
+      "/images/room-2.jpg",
+      "/images/room-3.jpg",
+    ],
+    salon: [
+      "/images/olympic/salon/olympic-salon-1.jpg",
+    ],
+    facilities: [
+      "/images/feature.jpg",
+      "/images/olympic/facilities/olympic-facility-2.jpg",
+    ],
+    gallery: [
+      "/images/gallery-1.jpg",
+      "/images/gallery-2.jpg",
+      "/images/gallery-3.jpg",
+      "/images/gallery-4.jpg",
+      "/images/gallery-5.jpg",
+    ],
+  },
+  {
+    id: "gahinga",
+    name: "Gahinga",
+    folder: "gahinga",
+    tagline: "Discover Gahinga",
+    description:
+      "Explore Gahinga and discover its accommodation and available spaces.",
+    building: [
+      "/images/gahinga/building/gahinga-building-1.jpg",
+      "/images/gahinga/building/gahinga-building-2.jpg",
+    ],
+    rooms: [
+      "/images/gahinga/rooms/gahinga-room-1.jpg",
+      "/images/gahinga/rooms/gahinga-room-2.jpg",
+      "/images/gahinga/rooms/gahinga-room-3.jpg",
+    ],
+    salon: [
+      "/images/gahinga/salon/gahinga-salon-1.jpg",
+    ],
+    facilities: [
+      "/images/gahinga/facilities/gahinga-facility-1.jpg",
+      "/images/gahinga/facilities/gahinga-facility-2.jpg",
+    ],
+    gallery: [
+      "/images/gahinga/gallery/gahinga-gallery-1.jpg",
+      "/images/gahinga/gallery/gahinga-gallery-2.jpg",
+      "/images/gahinga/gallery/gahinga-gallery-3.jpg",
+    ],
+  },
+  {
+    id: "ijuru-rito",
+    name: "Ijuru Rito",
+    folder: "ijuru-rito",
+    tagline: "Discover Ijuru Rito",
+    description:
+      "Take a closer look at Ijuru Rito, another property in the Musanze collection.",
+    building: [
+      "/images/ijuru-rito/building/ijuru-rito-building-1.jpg",
+      "/images/ijuru-rito/building/ijuru-rito-building-2.jpg",
+    ],
+    rooms: [
+      "/images/ijuru-rito/rooms/ijuru-rito-room-1.jpg",
+      "/images/ijuru-rito/rooms/ijuru-rito-room-2.jpg",
+      "/images/ijuru-rito/rooms/ijuru-rito-room-3.jpg",
+    ],
+    salon: [
+      "/images/ijuru-rito/salon/ijuru-rito-salon-1.jpg",
+    ],
+    facilities: [
+      "/images/ijuru-rito/facilities/ijuru-rito-facility-1.jpg",
+      "/images/ijuru-rito/facilities/ijuru-rito-facility-2.jpg",
+    ],
+    gallery: [
+      "/images/ijuru-rito/gallery/ijuru-rito-gallery-1.jpg",
+      "/images/ijuru-rito/gallery/ijuru-rito-gallery-2.jpg",
+      "/images/ijuru-rito/gallery/ijuru-rito-gallery-3.jpg",
+    ],
+  },
+  {
+    id: "tequila-and-sweet",
+    name: "Tequila and Sweet",
+    folder: "tequila-and-sweet",
+    tagline: "Discover Tequila and Sweet",
+    description:
+      "Explore Tequila and Sweet and see the spaces available at this property.",
+    building: [
+      "/images/tequila-and-sweet/building/tequila-building-1.jpg",
+      "/images/tequila-and-sweet/building/tequila-building-2.jpg",
+    ],
+    rooms: [
+      "/images/tequila-and-sweet/rooms/tequila-room-1.jpg",
+      "/images/tequila-and-sweet/rooms/tequila-room-2.jpg",
+      "/images/tequila-and-sweet/rooms/tequila-room-3.jpg",
+    ],
+    salon: [
+      "/images/tequila-and-sweet/salon/tequila-salon-1.jpg",
+    ],
+    facilities: [
+      "/images/tequila-and-sweet/facilities/tequila-facility-1.jpg",
+      "/images/tequila-and-sweet/facilities/tequila-facility-2.jpg",
+    ],
+    gallery: [
+      "/images/tequila-and-sweet/gallery/tequila-gallery-1.jpg",
+      "/images/tequila-and-sweet/gallery/tequila-gallery-2.jpg",
+      "/images/tequila-and-sweet/gallery/tequila-gallery-3.jpg",
+    ],
+  },
+];
+
+function PropertyImage({ src, alt, className = "" }) {
+  const [failed, setFailed] = useState(false);
+
+  return (
+    <div className={`property-image ${className}`}>
+      {!failed ? (
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        <div className="image-placeholder">
+          <Images size={27} />
+          <span>Photograph to be added</span>
+          <small>{src.split("/").pop()}</small>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const closeMenu = () => setMenuOpen(false);
+
+  return (
+    <header className="header">
+      <a href="#home" className="brand" onClick={closeMenu}>
+        <span className="brand-name">MUSANZE</span>
+        <span className="brand-subtitle">HOSPITALITY COLLECTION</span>
+      </a>
+
+      <button
+        className="menu-toggle"
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle navigation"
+      >
+        {menuOpen ? <X /> : <Menu />}
+      </button>
+
+      <nav className={`navigation ${menuOpen ? "navigation-open" : ""}`}>
+        <a href="#home" onClick={closeMenu}>Home</a>
+        <a href="#properties" onClick={closeMenu}>Our Properties</a>
+        <a href="#about" onClick={closeMenu}>About</a>
+        <a href="#contact" onClick={closeMenu}>Contact</a>
+        <a href="tel:+250785583640" className="nav-phone">
+          <Phone size={15} /> +250 785 583 640
+        </a>
+        <a href="#booking" className="nav-book" onClick={closeMenu}>
+          Make an Enquiry <ArrowUpRight size={15} />
+        </a>
+      </nav>
+    </header>
+  );
+}
+
+function SectionHeading({ eyebrow, title, description }) {
+  return (
+    <div className="section-heading">
+      <span className="eyebrow">{eyebrow}</span>
+      <h2>{title}</h2>
+      {description && <p>{description}</p>}
+    </div>
+  );
+}
+
+function PhotoCollection({ title, images, propertyName, category }) {
+  return (
+    <div className="property-category">
+      <div className="property-category-heading">
+        <div>
+          <span className="eyebrow">{category}</span>
+          <h3>{title}</h3>
+        </div>
+        <span className="photo-count">
+          {images.length} {images.length === 1 ? "photo" : "photos"}
+        </span>
+      </div>
+
+      <div className="property-photo-grid">
+        {images.map((image, index) => (
+          <PropertyImage
+            key={image}
+            src={image}
+            alt={`${propertyName} ${category} ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PropertySection({ property, index }) {
+  return (
+    <section
+      className={`property-detail ${index % 2 === 1 ? "property-alternate" : ""}`}
+      id={property.id}
+    >
+      <div className="property-detail-inner">
+        <div className="property-title-row">
+          <div>
+            <span className="eyebrow">
+              {property.tagline}
+            </span>
+            <h2>{property.name}</h2>
+            <p>{property.description}</p>
+          </div>
+
+          <a
+            href={`#booking`}
+            className="property-enquiry-link"
+            onClick={() => {
+              // The selected property is also available in the enquiry form.
+            }}
+          >
+            Enquire about this property <ArrowUpRight size={17} />
+          </a>
+        </div>
+
+        <PhotoCollection
+          title="Building and exterior"
+          category="01 / The property"
+          images={property.building}
+          propertyName={property.name}
+        />
+
+        <PhotoCollection
+          title="Rooms and accommodation"
+          category="02 / Accommodation"
+          images={property.rooms}
+          propertyName={property.name}
+        />
+
+        <PhotoCollection
+          title="Salon"
+          category="03 / Salon, if available"
+          images={property.salon}
+          propertyName={property.name}
+        />
+
+        <PhotoCollection
+          title="Other facilities"
+          category="04 / Facilities"
+          images={property.facilities}
+          propertyName={property.name}
+        />
+
+        <PhotoCollection
+          title="More photographs"
+          category="05 / Gallery"
+          images={property.gallery}
+          propertyName={property.name}
+        />
+      </div>
+    </section>
+  );
+}
+
+function App() {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [menuMessage, setMenuMessage] = useState("");
+  const [selectedProperty, setSelectedProperty] = useState("Olympic Motel");
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((current) => (current + 1) % heroImages.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const submitBooking = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+
+    setMenuMessage("Sending your enquiry...");
+
+    try {
+      const formData = new FormData(form);
+      formData.append(
+        "_subject",
+        `New property enquiry - ${formData.get("property")}`
+      );
+
+      const response = await fetch("https://formspree.io/f/mqppgkjl", {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        const errorMessage = result.errors
+          ? result.errors.map((error) => error.message).join(", ")
+          : "Could not submit your enquiry.";
+        throw new Error(errorMessage);
+      }
+
+      setMenuMessage(
+        "Thank you! Your enquiry has been received. Our team will contact you."
+      );
+      form.reset();
+      setSelectedProperty("Olympic Motel");
+    } catch (error) {
+      setMenuMessage(
+        error.message + " You can also call +250 785 583 640."
+      );
+    }
+  };
+
+  return (
+    <>
+      <Header />
+
+      <main>
+        {/* MAIN HERO */}
+        <section className="hero" id="home">
+          <div className="hero-slides">
+            {heroImages.map((image, index) => (
+              <div
+                key={image}
+                className={`hero-slide ${activeSlide === index ? "active" : ""}`}
+              >
+                <img
+                  src={image}
+                  alt={index === 0 ? "Musanze accommodation" : ""}
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="hero-overlay"></div>
+
+          <div className="hero-content">
+            <span className="hero-eyebrow">
+              A COLLECTION OF PROPERTIES IN MUSANZE
+            </span>
+
+            <h1>
+              Find your place.<br />
+              <em>Feel at home.</em>
+            </h1>
+
+            <p>
+              Discover a collection of accommodation properties
+              in Musanze, Rwanda. Explore each property and find
+              a place that suits your visit.
+            </p>
+
+            <div className="hero-actions">
+              <a href="#properties" className="button button-light">
+                Explore Our Properties <ArrowUpRight size={17} />
+              </a>
+              <a href="#about" className="hero-text-link">
+                Discover more <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </div>
+
+          <div className="hero-bottom">
+            <span>MUSANZE, RWANDA</span>
+            <div className="slide-indicators">
+              {heroImages.map((_, index) => (
+                <button
+                  key={index}
+                  className={activeSlide === index ? "indicator active" : "indicator"}
+                  onClick={() => setActiveSlide(index)}
+                  aria-label={`Show slide ${index + 1}`}
+                />
+              ))}
+            </div>
+            <span>0{activeSlide + 1} — 03</span>
+          </div>
+        </section>
+
+        {/* INTRO STRIP */}
+        <section className="intro-strip">
+          <div><MapPin size={19} /><span>Musanze, Rwanda</span></div>
+          <span className="intro-divider"></span>
+          <p>Explore our collection of properties.</p>
+          <a href="#properties">View properties <ArrowUpRight size={15} /></a>
+        </section>
+
+        {/* ABOUT THE COLLECTION */}
+        <section className="collection-about section-padding" id="about">
+          <div className="collection-about-icon">
+            <Building2 size={35} />
+          </div>
+          <div>
+            <span className="eyebrow">WELCOME TO MUSANZE</span>
+            <h2>Different places. One destination.</h2>
+            <p>
+              Discover four individual accommodation properties
+              in Musanze: Olympic Motel, Gahinga, Ijuru Rito,
+              and Tequila and Sweet. Explore their buildings,
+              rooms and available facilities before making
+              an enquiry.
+            </p>
+          </div>
+        </section>
+
+        {/* PROPERTY DIRECTORY */}
+        <section className="properties-overview section-padding" id="properties">
+          <SectionHeading
+            eyebrow="EXPLORE THE COLLECTION"
+            title="Our properties."
+            description="Each property has its own character and spaces. Select a property to explore its photographs and details."
+          />
+
+          <div className="property-card-grid">
+            {properties.map((property, index) => (
+              <a
+                href={`#${property.id}`}
+                className="property-directory-card"
+                key={property.id}
+              >
+                <div className="directory-card-image">
+                  <PropertyImage
+                    src={property.building[0]}
+                    alt={`${property.name} building`}
+                  />
+                  <span className="directory-number">0{index + 1}</span>
+                </div>
+                <div className="directory-card-info">
+                  <div>
+                    <span className="eyebrow">
+                      {index === 0 ? "FLAGSHIP PROPERTY" : "MUSANZE"}
+                    </span>
+                    <h3>{property.name}</h3>
+                  </div>
+                  <ArrowUpRight size={21} />
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* INDIVIDUAL PROPERTY DETAILS */}
+        {properties.map((property, index) => (
+          <PropertySection
+            property={property}
+            index={index}
+            key={property.id}
+          />
+        ))}
+
+        {/* BOOKING / ENQUIRY */}
+        <section className="booking section-padding" id="booking">
+          <div className="booking-intro">
+            <span className="eyebrow">PLAN YOUR VISIT</span>
+            <h2>Which property would you like to explore?</h2>
+            <p>
+              Send us an enquiry about your preferred property,
+              dates and accommodation needs. Our team will contact
+              you to discuss availability.
+            </p>
+            <div className="booking-note">
+              <Sparkles size={22} />
+              <span>We look forward to hearing from you.</span>
+            </div>
+          </div>
+
+          <form className="booking-form" onSubmit={submitBooking}>
+            <h3>Property enquiry</h3>
+
+            <label>
+              Select a property
+              <select
+                name="property"
+                value={selectedProperty}
+                onChange={(event) => setSelectedProperty(event.target.value)}
+                required
+              >
+                {properties.map((property) => (
+                  <option key={property.id} value={property.name}>
+                    {property.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <div className="form-row">
+              <label>
+                Check-in date
+                <input type="date" name="checkIn" required />
+              </label>
+              <label>
+                Check-out date
+                <input type="date" name="checkOut" required />
+              </label>
+            </div>
+
+            <div className="form-row">
+              <label>
+                Number of guests
+                <select name="guests" defaultValue="2">
+                  <option value="1">1 guest</option>
+                  <option value="2">2 guests</option>
+                  <option value="3">3 guests</option>
+                  <option value="4">4 guests</option>
+                  <option value="5+">5 or more</option>
+                </select>
+              </label>
+
+              <label>
+                Room preference
+                <input
+                  type="text"
+                  name="roomPreference"
+                  placeholder="Any available room"
+                />
+              </label>
+            </div>
+
+            <label>
+              Your name
+              <input
+                type="text"
+                name="name"
+                placeholder="Enter your name"
+                required
+              />
+            </label>
+
+            <label>
+              Email address
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+              />
+            </label>
+
+            <label>
+              Phone number
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Enter your phone number"
+              />
+            </label>
+
+            <label>
+              Additional message
+              <textarea
+                name="message"
+                rows="4"
+                placeholder="Tell us more about your enquiry"
+              ></textarea>
+            </label>
+
+            <button type="submit" className="button button-dark form-submit">
+              Send Enquiry <ArrowUpRight size={17} />
+            </button>
+
+            {menuMessage && (
+              <p className="form-message" role="status">{menuMessage}</p>
+            )}
+
+            <small>
+              This form sends an enquiry, not a confirmed reservation.
+              Our team will contact you to confirm availability.
+            </small>
+          </form>
+        </section>
+
+        {/* CONTACT */}
+        <section className="contact section-padding" id="contact">
+          <div>
+            <span className="eyebrow">WE WOULD LOVE TO HEAR FROM YOU</span>
+            <h2>Let's plan your visit.</h2>
+            <p>
+              Have questions about one of our properties?
+              Contact us directly. We would be happy to hear from you.
+            </p>
+          </div>
+
+          <div className="contact-card">
+            <span className="contact-icon"><MapPin size={23} /></span>
+            <span className="eyebrow">OUR LOCATION</span>
+            <h3>Musanze, Rwanda</h3>
+
+            <div className="contact-actions">
+              <a href="tel:+250785583640">
+                <Phone size={17} /> +250 785 583 640
+              </a>
+              <a
+                href="https://wa.me/250785583640"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <MessageCircle size={17} /> Chat on WhatsApp
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* FOOTER */}
+      <footer className="footer">
+        <div className="footer-main">
+          <a href="#home" className="brand footer-brand">
+            <span className="brand-name">MUSANZE</span>
+            <span className="brand-subtitle">HOSPITALITY COLLECTION</span>
+          </a>
+          <p>Explore our collection of properties in Musanze, Rwanda.</p>
+          <a href="#home" className="back-top">Back to top ↑</a>
+        </div>
+
+        <div className="footer-bottom">
+          <span>© {new Date().getFullYear()} All rights reserved.</span>
+          <span>Musanze, Rwanda.</span>
+        </div>
+      </footer>
+    </>
+  );
+}
+
+export default App;

@@ -1,38 +1,230 @@
-
 import { useState, useEffect } from "react";
 import {
-  Menu, X, ArrowUpRight, MapPin, BedDouble,
-  CalendarDays, Users, Sparkles, ChevronRight, Phone, MessageCircle
+  Routes,
+  Route,
+  Link,
+  useParams,
+  useSearchParams,
+  Navigate,
+} from "react-router-dom";
+
+import {
+  Menu,
+  X,
+  ArrowUpRight,
+  MapPin,
+  Phone,
+  MessageCircle,
+  Building2,
+  Images,
+  Sparkles,
+  ArrowLeft,
 } from "lucide-react";
+
 import "./App.css";
 
-const rooms = [
+/*
+  IMAGE GUIDE:
+  Replace these filenames with your real photographs.
+  All image paths begin inside the public/ folder.
+*/
+
+const heroImages = [
+  "/images/hero.jpg",
+  "/images/hero-2.jpg",
+  "/images/hero-3.jpg",
+];
+
+const properties = [
   {
-    number: "01",
-    name: "A Place to Unwind",
-    description: "A welcoming space to relax and enjoy your stay.",
-    image: "/images/room-1.jpg",
+    id: "olympic",
+    name: "Olympic Motel",
+    tagline: "Our flagship property",
+    description:
+      "Discover Olympic Motel, one of the accommodation properties in Musanze, Rwanda. Explore its building, rooms and available spaces.",
+    building: [
+      "/images/hero.jpg",
+      "/images/about.jpg",
+    ],
+    rooms: [
+      "/images/room-1.jpg",
+      "/images/room-2.jpg",
+      "/images/room-3.jpg",
+    ],
+    salon: [
+      "/images/olympic/salon/olympic-salon-1.jpg",
+    ],
+    facilities: [
+      "/images/feature.jpg",
+      "/images/olympic/facilities/olympic-facility-2.jpg",
+    ],
+    gallery: [
+      "/images/gallery-1.jpg",
+      "/images/gallery-2.jpg",
+      "/images/gallery-3.jpg",
+      "/images/gallery-4.jpg",
+      "/images/gallery-5.jpg",
+    ],
   },
   {
-    number: "02",
-    name: "Comfort & Calm",
-    description: "Make yourself at home in a comfortable setting.",
-    image: "/images/room-2.jpg",
+    id: "gahinga",
+    name: "Gahinga",
+    tagline: "Discover Gahinga",
+    description:
+      "Explore Gahinga and discover its accommodation and available spaces in Musanze.",
+    building: [
+      "/images/gahinga/building/gahinga-building-1.jpg",
+      "/images/gahinga/building/gahinga-building-2.jpg",
+    ],
+    rooms: [
+      "/images/gahinga/rooms/gahinga-room-1.jpg",
+      "/images/gahinga/rooms/gahinga-room-2.jpg",
+      "/images/gahinga/rooms/gahinga-room-3.jpg",
+    ],
+    salon: [
+      "/images/gahinga/salon/gahinga-salon-1.jpg",
+    ],
+    facilities: [
+      "/images/gahinga/facilities/gahinga-facility-1.jpg",
+      "/images/gahinga/facilities/gahinga-facility-2.jpg",
+    ],
+    gallery: [
+      "/images/gahinga/gallery/gahinga-gallery-1.jpg",
+      "/images/gahinga/gallery/gahinga-gallery-2.jpg",
+      "/images/gahinga/gallery/gahinga-gallery-3.jpg",
+    ],
   },
   {
-    number: "03",
-    name: "Your Stay in Musanze",
-    description: "A restful place to begin your Musanze experience.",
-    image: "/images/room-3.jpg",
+    id: "ijuru-rito",
+    name: "Ijuru Rito",
+    tagline: "Discover Ijuru Rito",
+    description:
+      "Take a closer look at Ijuru Rito, another individual accommodation property in Musanze.",
+    building: [
+      "/images/ijuru-rito/building/ijuru-rito-building-1.jpg",
+      "/images/ijuru-rito/building/ijuru-rito-building-2.jpg",
+    ],
+    rooms: [
+      "/images/ijuru-rito/rooms/ijuru-rito-room-1.jpg",
+      "/images/ijuru-rito/rooms/ijuru-rito-room-2.jpg",
+      "/images/ijuru-rito/rooms/ijuru-rito-room-3.jpg",
+    ],
+    salon: [
+      "/images/ijuru-rito/salon/ijuru-rito-salon-1.jpg",
+    ],
+    facilities: [
+      "/images/ijuru-rito/facilities/ijuru-rito-facility-1.jpg",
+      "/images/ijuru-rito/facilities/ijuru-rito-facility-2.jpg",
+    ],
+    gallery: [
+      "/images/ijuru-rito/gallery/ijuru-rito-gallery-1.jpg",
+      "/images/ijuru-rito/gallery/ijuru-rito-gallery-2.jpg",
+      "/images/ijuru-rito/gallery/ijuru-rito-gallery-3.jpg",
+    ],
+  },
+  {
+    id: "tequila",
+    name: "Tequila",
+    tagline: "Discover Tequila",
+    description:
+      "Explore Tequila and discover its accommodation and available spaces in Musanze.",
+    building: [
+      "/images/tequila/building/tequila-building-1.jpg",
+      "/images/tequila/building/tequila-building-2.jpg",
+    ],
+    rooms: [
+      "/images/tequila/rooms/tequila-room-1.jpg",
+      "/images/tequila/rooms/tequila-room-2.jpg",
+      "/images/tequila/rooms/tequila-room-3.jpg",
+    ],
+    salon: [],
+    facilities: [],
+    gallery: [
+      "/images/tequila/gallery/tequila-gallery-1.jpg",
+      "/images/tequila/gallery/tequila-gallery-2.jpg",
+      "/images/tequila/gallery/tequila-gallery-3.jpg",
+    ],
+  },
+  {
+    id: "sweet",
+    name: "Sweet",
+    tagline: "Discover Sweet",
+    description:
+      "Explore Sweet and discover its accommodation and available spaces in Musanze.",
+    building: [
+      "/images/sweet/building/sweet-building-1.jpg",
+      "/images/sweet/building/sweet-building-2.jpg",
+    ],
+    rooms: [
+      "/images/sweet/rooms/sweet-room-1.jpg",
+      "/images/sweet/rooms/sweet-room-2.jpg",
+      "/images/sweet/rooms/sweet-room-3.jpg",
+    ],
+    salon: [],
+    facilities: [],
+    gallery: [
+      "/images/sweet/gallery/sweet-gallery-1.jpg",
+      "/images/sweet/gallery/sweet-gallery-2.jpg",
+      "/images/sweet/gallery/sweet-gallery-3.jpg",
+    ],
   },
 ];
 
-const galleryImages = [
-  "/images/gallery-1.jpg",
-  "/images/gallery-2.jpg",
-  "/images/gallery-3.jpg",
-  "/images/gallery-4.jpg",
-];
+/* IMAGE COMPONENT */
+
+function PropertyImage({ src, alt, className = "" }) {
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
+
+  return (
+    <div className={`property-image ${className}`}>
+      {!failed ? (
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        <div className="image-placeholder">
+          <Images size={27} />
+          <span>Photograph to be added</span>
+          <small>{src.split("/").pop()}</small>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* SEO METADATA */
+
+function updatePageSEO(title, description) {
+  document.title = title;
+
+  const setMeta = (selector, attribute, value) => {
+    let element = document.querySelector(selector);
+
+    if (!element) {
+      element = document.createElement("meta");
+      const [key, keyValue] = selector.match(/\[(name|property)="([^"]+)"\]/).slice(1);
+      element.setAttribute(key, keyValue);
+      document.head.appendChild(element);
+    }
+
+    element.setAttribute(attribute, value);
+  };
+
+  setMeta('meta[name="description"]', "content", description);
+  setMeta('meta[property="og:title"]', "content", title);
+  setMeta('meta[property="og:description"]', "content", description);
+  setMeta('meta[property="og:type"]', "content", "website");
+}
+
+/* HEADER */
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -41,10 +233,10 @@ function Header() {
 
   return (
     <header className="header">
-      <a href="#home" className="brand" onClick={closeMenu}>
-        <span className="brand-name">OLYMPIC</span>
-        <span className="brand-subtitle">MOTEL · MUSANZE</span>
-      </a>
+      <Link to="/" className="brand" onClick={closeMenu}>
+        <span className="brand-name">BALLOS</span>
+        <span className="brand-subtitle">HOSPITALITY</span>
+      </Link>
 
       <button
         className="menu-toggle"
@@ -55,21 +247,48 @@ function Header() {
       </button>
 
       <nav className={`navigation ${menuOpen ? "navigation-open" : ""}`}>
-        <a href="#home" onClick={closeMenu}>Home</a>
-        <a href="#about" onClick={closeMenu}>About</a>
-        <a href="#rooms" onClick={closeMenu}>Rooms</a>
-        <a href="#gallery" onClick={closeMenu}>Gallery</a>
-        <a href="#contact" onClick={closeMenu}>Contact</a>
+        <Link to="/" onClick={closeMenu}>Home</Link>
+        <a href="/#properties" onClick={closeMenu}>Our Properties</a>
+        <a href="/#about" onClick={closeMenu}>About</a>
+        <a href="/#contact" onClick={closeMenu}>Contact</a>
+
         <a href="tel:+250785583640" className="nav-phone">
           <Phone size={15} /> +250 785 583 640
         </a>
-        <a href="#booking" className="nav-book" onClick={closeMenu}>
-          Book a Stay <ArrowUpRight size={15} />
-        </a>
+
+        <Link to="/booking" className="nav-book" onClick={closeMenu}>
+          Make an Enquiry <ArrowUpRight size={15} />
+        </Link>
       </nav>
     </header>
   );
 }
+
+/* FOOTER */
+
+function Footer() {
+  return (
+    <footer className="footer">
+      <div className="footer-main">
+        <Link to="/" className="brand footer-brand">
+          <span className="brand-name">BALLOS</span>
+          <span className="brand-subtitle">HOSPITALITY</span>
+        </Link>
+
+        <p>Ballos Hospitality brings together five individual accommodation properties in Musanze, Rwanda.</p>
+
+        <Link to="/" className="back-top">Back to home ↑</Link>
+      </div>
+
+      <div className="footer-bottom">
+        <span>© {new Date().getFullYear()} All rights reserved.</span>
+        <span>Musanze, Rwanda.</span>
+      </div>
+    </footer>
+  );
+}
+
+/* SECTION HEADING */
 
 function SectionHeading({ eyebrow, title, description }) {
   return (
@@ -81,13 +300,40 @@ function SectionHeading({ eyebrow, title, description }) {
   );
 }
 
-function App() {
-  const heroImages = [
-    "/images/hero.jpg",
-    "/images/hero-2.jpg",
-    "/images/hero-3.jpg",
-  ];
+/* PHOTO COLLECTION */
 
+function PhotoCollection({ title, images, propertyName, category }) {
+  if (!images || images.length === 0) return null;
+
+  return (
+    <div className="property-category">
+      <div className="property-category-heading">
+        <div>
+          <span className="eyebrow">{category}</span>
+          <h3>{title}</h3>
+        </div>
+
+        <span className="photo-count">
+          {images.length} {images.length === 1 ? "photo" : "photos"}
+        </span>
+      </div>
+
+      <div className="property-photo-grid">
+        {images.map((image, index) => (
+          <PropertyImage
+            key={image}
+            src={image}
+            alt={`${propertyName} ${category} ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* HOME PAGE */
+
+function HomePage() {
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
@@ -96,40 +342,334 @@ function App() {
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [heroImages.length]);
+  }, []);
 
-  const [booking, setBooking] = useState({
-    checkIn: "",
-    checkOut: "",
-    guests: "2",
-    room: "Any available room",
-    name: "",
-    email: "",
-  });
+  useEffect(() => {
+    updatePageSEO(
+      "Ballos Hospitality | Five Accommodation Properties in Musanze, Rwanda",
+      "Discover Ballos Hospitality in Musanze, Rwanda. Explore Olympic Motel, Gahinga, Ijuru Rito, Tequila and Sweet, and enquire about your stay."
+    );
+  }, []);
+
+  return (
+    <>
+      <main>
+        <section className="hero" id="home">
+          <div className="hero-slides">
+            {heroImages.map((image, index) => (
+              <div
+                key={image}
+                className={`hero-slide ${activeSlide === index ? "active" : ""}`}
+              >
+                <img
+                  src={image}
+                  alt={index === 0 ? "Musanze accommodation" : ""}
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="hero-overlay"></div>
+
+          <div className="hero-content">
+            <span className="hero-eyebrow">
+              WELCOME TO BALLOS HOSPITALITY
+            </span>
+
+            <h1>
+              Find your place.<br />
+              <em>Feel at home.</em>
+            </h1>
+
+            <p>
+              Welcome to Ballos Hospitality. Discover five individual accommodation properties in Musanze, Rwanda: Olympic Motel, Gahinga, Ijuru Rito, Tequila and Sweet.
+            </p>
+
+            <div className="hero-actions">
+              <a href="/#properties" className="button button-light">
+                Explore Our Properties <ArrowUpRight size={17} />
+              </a>
+
+              <a href="#about" className="hero-text-link">
+                Discover more <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </div>
+
+          <div className="hero-bottom">
+            <span>MUSANZE, RWANDA</span>
+
+            <div className="slide-indicators">
+              {heroImages.map((_, index) => (
+                <button
+                  key={index}
+                  className={activeSlide === index ? "indicator active" : "indicator"}
+                  onClick={() => setActiveSlide(index)}
+                  aria-label={`Show slide ${index + 1}`}
+                />
+              ))}
+            </div>
+
+            <span>0{activeSlide + 1} — 03</span>
+          </div>
+        </section>
+
+        <section className="intro-strip">
+          <div><MapPin size={19} /><span>Musanze, Rwanda</span></div>
+          <span className="intro-divider"></span>
+          <p>Discover our five properties in Musanze.</p>
+          <a href="#properties">View properties <ArrowUpRight size={15} /></a>
+        </section>
+
+        <section className="collection-about section-padding" id="about">
+          <div className="collection-about-icon">
+            <Building2 size={35} />
+          </div>
+
+          <div>
+            <span className="eyebrow">WELCOME TO BALLOS HOSPITALITY</span>
+            <h2>Five properties to explore in Musanze.</h2>
+            <p>
+              Ballos Hospitality brings together five individual accommodation properties in Musanze. Explore Olympic Motel, our flagship property, as well as Gahinga, Ijuru Rito, Tequila and Sweet. Each property has its own page where you can view photographs and make an enquiry.
+            </p>
+          </div>
+        </section>
+
+        <section className="properties-overview section-padding" id="properties">
+          <SectionHeading
+            eyebrow="EXPLORE OUR PROPERTIES"
+            title="Our properties."
+            description="Each property has its own character and spaces. Select a property to explore its photographs and details."
+          />
+
+          <div className="property-card-grid">
+            {properties.map((property, index) => (
+              <Link
+                to={`/properties/${property.id}`}
+                className="property-directory-card"
+                key={property.id}
+              >
+                <div className="directory-card-image">
+                  <PropertyImage
+                    src={property.building[0]}
+                    alt={`${property.name} building`}
+                  />
+                  <span className="directory-number">0{index + 1}</span>
+                </div>
+
+                <div className="directory-card-info">
+                  <div>
+                    <span className="eyebrow">
+                      {index === 0 ? "MAIN PROPERTY" : "BALLOS PROPERTY"}
+                    </span>
+                    <h3>{property.name}</h3>
+                  </div>
+
+                  <ArrowUpRight size={21} />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="contact section-padding" id="contact">
+          <div>
+            <span className="eyebrow">WE WOULD LOVE TO HEAR FROM YOU</span>
+            <h2>Let's plan your visit.</h2>
+            <p>
+              Have questions about one of our properties?
+              Contact us directly. We would be happy to hear from you.
+            </p>
+          </div>
+
+          <div className="contact-card">
+            <span className="contact-icon"><MapPin size={23} /></span>
+            <span className="eyebrow">OUR LOCATION</span>
+            <h3>Musanze, Rwanda</h3>
+
+            <div className="contact-actions">
+              <a href="tel:+250785583640">
+                <Phone size={17} /> +250 785 583 640
+              </a>
+
+              <a
+                href="https://wa.me/250785583640"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <MessageCircle size={17} /> Chat on WhatsApp
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
+  );
+}
+
+/* INDIVIDUAL PROPERTY PAGE */
+
+function PropertyPage() {
+  const { propertyId } = useParams();
+
+  const property = properties.find((item) => item.id === propertyId);
+
+  useEffect(() => {
+    if (property) {
+      updatePageSEO(
+        `${property.name} | Ballos Hospitality | Musanze, Rwanda`,
+        `Discover ${property.name}, one of the five properties of Ballos Hospitality in Musanze, Rwanda. Explore photographs and send an accommodation enquiry.`
+      );
+    }
+  }, [property]);
+
+  if (!property) {
+    return <Navigate to="/" replace />;
+  }
+
+  return (
+    <main className="separate-page">
+      <section className="property-page-hero">
+        <PropertyImage
+          src={property.building[0]}
+          alt={`${property.name} exterior`}
+          className="property-page-hero-image"
+        />
+
+        <div className="property-page-hero-overlay"></div>
+
+        <div className="property-page-hero-content">
+          <span className="hero-eyebrow">{property.tagline}</span>
+          <h1>{property.name}</h1>
+          <p>{property.description}</p>
+
+          <Link
+            to={`/booking?property=${encodeURIComponent(property.name)}`}
+            className="button button-light"
+          >
+            Enquire about this property <ArrowUpRight size={17} />
+          </Link>
+        </div>
+      </section>
+
+      <div className="property-page-content">
+        <a href="/#properties" className="back-to-properties">
+          <ArrowLeft size={17} /> Back to all properties
+        </a>
+
+        <div className="property-page-intro">
+          <span className="eyebrow">EXPLORE THE PROPERTY</span>
+          <h2>Discover {property.name}.</h2>
+          <p>
+            Browse the photographs below to learn more about
+            the building, accommodation and other spaces.
+          </p>
+        </div>
+
+        <PhotoCollection
+          title="Building and exterior"
+          category="01 / The property"
+          images={property.building}
+          propertyName={property.name}
+        />
+
+        <PhotoCollection
+          title="Rooms and accommodation"
+          category="02 / Accommodation"
+          images={property.rooms}
+          propertyName={property.name}
+        />
+
+        <PhotoCollection
+          title="Salon"
+          category="03 / Salon"
+          images={property.salon}
+          propertyName={property.name}
+        />
+
+        <PhotoCollection
+          title="Other facilities"
+          category="04 / Facilities"
+          images={property.facilities}
+          propertyName={property.name}
+        />
+
+        <PhotoCollection
+          title="More photographs"
+          category="05 / Gallery"
+          images={property.gallery}
+          propertyName={property.name}
+        />
+
+        <div className="property-page-cta">
+          <div>
+            <span className="eyebrow">PLAN YOUR VISIT</span>
+            <h2>Interested in {property.name}?</h2>
+            <p>Send us an enquiry and our team will get in touch.</p>
+          </div>
+
+          <Link
+            to={`/booking?property=${encodeURIComponent(property.name)}`}
+            className="button button-dark"
+          >
+            Make an Enquiry <ArrowUpRight size={17} />
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+/* BOOKING / ENQUIRY PAGE */
+
+function BookingPage() {
+  useEffect(() => {
+    updatePageSEO(
+      "Make an Enquiry | Ballos Hospitality",
+      "Contact Ballos Hospitality to enquire about accommodation at Olympic Motel, Gahinga, Ijuru Rito, Tequila or Sweet in Musanze, Rwanda."
+    );
+  }, []);
+
+  const [searchParams] = useSearchParams();
+
+  const requestedProperty = searchParams.get("property");
+
+  const validProperty = properties.find(
+    (property) => property.name === requestedProperty
+  );
+
+  const [selectedProperty, setSelectedProperty] = useState(
+    validProperty?.name || "Olympic Motel"
+  );
 
   const [menuMessage, setMenuMessage] = useState("");
 
-  const updateBooking = (event) => {
-    setBooking({
-      ...booking,
-      [event.target.name]: event.target.value,
-    });
-  };
+  useEffect(() => {
+    if (validProperty) {
+      setSelectedProperty(validProperty.name);
+    }
+  }, [requestedProperty]);
 
   const submitBooking = async (event) => {
     event.preventDefault();
+
     const form = event.currentTarget;
-    setMenuMessage("Sending your booking enquiry...");
+    setMenuMessage("Sending your enquiry...");
 
     try {
       const formData = new FormData(form);
-      formData.append("_subject", "New booking enquiry - Olympic Motel");
+
+      formData.append(
+        "_subject",
+        `New property enquiry - ${formData.get("property")}`
+      );
 
       const response = await fetch("https://formspree.io/f/mqppgkjl", {
         method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
+        headers: { Accept: "application/json" },
         body: formData,
       });
 
@@ -139,320 +679,194 @@ function App() {
         const errorMessage = result.errors
           ? result.errors.map((error) => error.message).join(", ")
           : "Could not submit your enquiry.";
+
         throw new Error(errorMessage);
       }
 
-      setMenuMessage("Thank you! Your booking enquiry has been received.");
+      setMenuMessage(
+        "Thank you! Your enquiry has been received. Our team will contact you."
+      );
+
       form.reset();
+      setSelectedProperty("Olympic Motel");
     } catch (error) {
-      setMenuMessage(error.message + " Please call +250 785 583 640.");
+      setMenuMessage(
+        error.message + " You can also call +250 785 583 640."
+      );
     }
   };
 
   return (
+    <main className="booking-page section-padding">
+      <div className="booking-page-heading">
+        <Link to="/" className="back-to-properties">
+          <ArrowLeft size={17} /> Back to home
+        </Link>
+
+        <span className="eyebrow">PLAN YOUR VISIT</span>
+        <h1>Make an enquiry.</h1>
+        <p>
+          Tell us which property you are interested in and
+          share your accommodation requirements. Our team
+          will contact you to discuss availability.
+        </p>
+      </div>
+
+      <section className="booking booking-page-layout">
+        <div className="booking-intro">
+          <span className="eyebrow">WE ARE HERE TO HELP</span>
+          <h2>Let's find the right place for your visit.</h2>
+          <p>
+            Choose one of our properties and send us your
+            preferred dates and contact information.
+          </p>
+
+          <div className="booking-note">
+            <Sparkles size={22} />
+            <span>We look forward to hearing from you.</span>
+          </div>
+
+          <div className="booking-contact">
+            <a href="tel:+250785583640">
+              <Phone size={17} /> +250 785 583 640
+            </a>
+
+            <a
+              href="https://wa.me/250785583640"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MessageCircle size={17} /> Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <form className="booking-form" onSubmit={submitBooking}>
+          <h3>Property enquiry</h3>
+
+          <label>
+            Select a property
+            <select
+              name="property"
+              value={selectedProperty}
+              onChange={(event) => setSelectedProperty(event.target.value)}
+              required
+            >
+              {properties.map((property) => (
+                <option key={property.id} value={property.name}>
+                  {property.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className="form-row">
+            <label>
+              Check-in date
+              <input type="date" name="checkIn" required />
+            </label>
+
+            <label>
+              Check-out date
+              <input type="date" name="checkOut" required />
+            </label>
+          </div>
+
+          <div className="form-row">
+            <label>
+              Number of guests
+              <select name="guests" defaultValue="2">
+                <option value="1">1 guest</option>
+                <option value="2">2 guests</option>
+                <option value="3">3 guests</option>
+                <option value="4">4 guests</option>
+                <option value="5+">5 or more</option>
+              </select>
+            </label>
+
+            <label>
+              Room preference
+              <input
+                type="text"
+                name="roomPreference"
+                placeholder="Any available room"
+              />
+            </label>
+          </div>
+
+          <label>
+            Your name
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your name"
+              required
+            />
+          </label>
+
+          <label>
+            Email address
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+            />
+          </label>
+
+          <label>
+            Phone number
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Enter your phone number"
+            />
+          </label>
+
+          <label>
+            Additional message
+            <textarea
+              name="message"
+              rows="4"
+              placeholder="Tell us more about your enquiry"
+            ></textarea>
+          </label>
+
+          <button type="submit" className="button button-dark form-submit">
+            Send Enquiry <ArrowUpRight size={17} />
+          </button>
+
+          {menuMessage && (
+            <p className="form-message" role="status">
+              {menuMessage}
+            </p>
+          )}
+
+          <small>
+            This form sends an enquiry, not a confirmed reservation.
+            Our team will contact you to confirm availability.
+          </small>
+        </form>
+      </section>
+    </main>
+  );
+}
+
+/* APP ROUTES */
+
+function App() {
+  return (
     <>
       <Header />
 
-      <main>
-        {/* HERO */}
-        <section className="hero" id="home">
-  <div className="hero-slides">
-    {heroImages.map((image, index) => (
-      <div
-        key={image}
-        className={`hero-slide ${activeSlide === index ? "active" : ""}`}
-      >
-        <img
-          src={image}
-          alt={index === 0 ? "Olympic Motel in Musanze" : ""}
-          fetchPriority={index === 0 ? "high" : "auto"}
-          loading={index === 0 ? "eager" : "lazy"}
-          decoding="async"
-        />
-      </div>
-    ))}
-  </div>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/properties/:propertyId" element={<PropertyPage />} />
+        <Route path="/booking" element={<BookingPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
-  <div className="hero-overlay"></div>
-
-  <div className="hero-content">
-    <span className="hero-eyebrow">
-      YOUR STAY IN MUSANZE, RWANDA
-    </span>
-
-    <h1>
-      A stay to remember.<br />
-      <em>A place to belong.</em>
-    </h1>
-
-    <p>
-      Welcome to Olympic Motel. Discover a warm and inviting
-      place to pause, relax and enjoy your time in Musanze.
-    </p>
-
-    <div className="hero-actions">
-      <a href="#rooms" className="button button-light">
-        Explore the Motel <ArrowUpRight size={17} />
-      </a>
-
-      <a href="#about" className="hero-text-link">
-        Discover Olympic <ChevronRight size={17} />
-      </a>
-    </div>
-  </div>
-
-  <div className="hero-bottom">
-    <span>OLYMPIC MOTEL</span>
-
-    <div className="slide-indicators">
-      {heroImages.map((_, index) => (
-        <button
-          key={index}
-          className={activeSlide === index ? "indicator active" : "indicator"}
-          onClick={() => setActiveSlide(index)}
-          aria-label={`Show slide ${index + 1}`}
-        />
-      ))}
-    </div>
-
-    <span>0{activeSlide + 1} — 03</span>
-  </div>
-</section>
-
-        {/* INTRO STRIP */}
-        <section className="intro-strip">
-          <div><MapPin size={19} /><span>Musanze, Rwanda</span></div>
-          <span className="intro-divider"></span>
-          <p>A welcoming place for your journey.</p>
-          <a href="#booking">Plan your stay <ArrowUpRight size={15} /></a>
-        </section>
-
-        {/* ABOUT */}
-        <section className="about section-padding" id="about">
-          <div className="about-image image-frame">
-            <img src="/images/about.jpg" alt="Olympic Motel" loading="lazy" decoding="async" />
-            <span className="image-caption">A WELCOME IN MUSANZE</span>
-          </div>
-
-          <div className="about-content">
-            <span className="eyebrow">GET TO KNOW US</span>
-            <h2>More than a place to stay.</h2>
-            <p>
-              Every journey deserves a comfortable place to pause.
-              At Olympic Motel, we welcome you to experience Musanze
-              from a place you can call your home away from home.
-            </p>
-            <p>
-              Whether you are visiting the area or simply looking
-              for a place to relax, we look forward to welcoming you.
-            </p>
-            <a href="#contact" className="text-link">
-              Get in touch <ArrowUpRight size={16} />
-            </a>
-          </div>
-        </section>
-
-        {/* ROOMS */}
-        <section className="rooms section-padding" id="rooms">
-          <SectionHeading
-            eyebrow="STAY WITH US"
-            title="Find your space."
-            description="Take a look at our accommodation. Add the official room names, details and prices when they are confirmed."
-          />
-
-          <div className="room-grid">
-            {rooms.map((room) => (
-              <article className="room-card" key={room.number}>
-                <div className="room-image">
-                  <img src={room.image} alt={room.name} loading="lazy" decoding="async" />
-                  <span className="room-number">{room.number}</span>
-                </div>
-                <div className="room-info">
-                  <div>
-                    <h3>{room.name}</h3>
-                    <p>{room.description}</p>
-                  </div>
-                  <a href="#booking" aria-label={`Ask about ${room.name}`}>
-                    <ArrowUpRight size={20} />
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* HIGHLIGHT */}
-        <section className="highlight">
-          <div className="highlight-image"></div>
-          <div className="highlight-content">
-            <span className="eyebrow">THE OLYMPIC EXPERIENCE</span>
-            <h2>Make room for a little more comfort.</h2>
-            <p>
-              Your time away should feel special. Discover Olympic
-              Motel and make your next visit to Musanze memorable.
-            </p>
-            <a href="#booking" className="button button-dark">
-              Enquire About a Stay <ArrowUpRight size={17} />
-            </a>
-          </div>
-        </section>
-
-        {/* GALLERY */}
-        <section className="gallery section-padding" id="gallery">
-          <SectionHeading
-            eyebrow="A CLOSER LOOK"
-            title="A glimpse of Olympic."
-            description="Explore the spaces and moments that make up the motel. These photographs can be replaced with your own."
-          />
-          <div className="gallery-grid">
-            {galleryImages.map((image, index) => (
-              <div className={`gallery-item gallery-item-${index + 1}`} key={image}>
-                <img src={image} alt={`Olympic Motel gallery ${index + 1}`} loading="lazy" decoding="async" />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* BOOKING */}
-        <section className="booking section-padding" id="booking">
-          <div className="booking-intro">
-            <span className="eyebrow">PLAN YOUR VISIT</span>
-            <h2>Let's make your stay happen.</h2>
-            <p>
-              Tell us a little about your visit. You can use this form
-              to prepare a booking enquiry.
-            </p>
-            <div className="booking-note">
-              <CalendarDays size={22} />
-              <span>Choose your dates and share your details.</span>
-            </div>
-          </div>
-
-          <form className="booking-form" onSubmit={submitBooking}>
-            <h3>Booking enquiry</h3>
-
-            <div className="form-row">
-              <label>
-                Check-in
-                <input
-                  type="date"
-                  name="checkIn"
-                  value={booking.checkIn}
-                  onChange={updateBooking}
-                  required
-                />
-              </label>
-              <label>
-                Check-out
-                <input
-                  type="date"
-                  name="checkOut"
-                  value={booking.checkOut}
-                  onChange={updateBooking}
-                  min={booking.checkIn || undefined}
-                  required
-                />
-              </label>
-            </div>
-
-            <div className="form-row">
-              <label>
-                Guests
-                <select name="guests" value={booking.guests} onChange={updateBooking}>
-                  <option value="1">1 guest</option>
-                  <option value="2">2 guests</option>
-                  <option value="3">3 guests</option>
-                  <option value="4">4 guests</option>
-                  <option value="5+">5 or more</option>
-                </select>
-              </label>
-              <label>
-                Room preference
-                <select name="room" value={booking.room} onChange={updateBooking}>
-                  <option>Any available room</option>
-                  <option>Room 1</option>
-                  <option>Room 2</option>
-                  <option>Room 3</option>
-                </select>
-              </label>
-            </div>
-
-            <label>
-              Your name
-              <input
-                type="text"
-                name="name"
-                placeholder="Enter your name"
-                value={booking.name}
-                onChange={updateBooking}
-                required
-              />
-            </label>
-
-            <label>
-              Email address
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                value={booking.email}
-                onChange={updateBooking}
-                required
-              />
-            </label>
-
-            <button type="submit" className="button button-dark form-submit">
-              Send Booking Enquiry <ArrowUpRight size={17} />
-            </button>
-
-            {menuMessage && <p className="form-message">{menuMessage}</p>}
-            <small>Your enquiry will be sent to Olympic Motel. Our team will contact you to confirm availability.</small>
-          </form>
-        </section>
-
-        {/* CONTACT */}
-        <section className="contact section-padding" id="contact">
-  <div>
-    <span className="eyebrow">WE WOULD LOVE TO HEAR FROM YOU</span>
-    <h2>Planning a visit?</h2>
-    <p>
-      Have questions or need help planning your stay?
-      Contact Olympic Motel directly. We would be happy to hear from you.
-    </p>
-  </div>
-
-  <div className="contact-card">
-    <span className="contact-icon"><MapPin size={23} /></span>
-    <span className="eyebrow">FIND US</span>
-    <h3>Musanze, Rwanda</h3>
-
-    <div className="contact-actions">
-      <a href="tel:+250785583640">
-        <Phone size={17} /> +250 785 583 640
-      </a>
-      <a href="https://wa.me/250785583640" target="_blank" rel="noreferrer">
-        <MessageCircle size={17} /> Chat on WhatsApp
-      </a>
-    </div>
-  </div>
-</section>
-      </main>
-
-      {/* FOOTER */}
-      <footer className="footer">
-        <div className="footer-main">
-          <a href="#home" className="brand footer-brand">
-            <span className="brand-name">OLYMPIC</span>
-            <span className="brand-subtitle">MOTEL · MUSANZE</span>
-          </a>
-          <p>A welcoming place to stay in Musanze, Rwanda.</p>
-          <a href="#home" className="back-top">Back to top ↑</a>
-        </div>
-        <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Olympic Motel. All rights reserved.</span>
-          <span>Made with care in Rwanda.</span>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }
